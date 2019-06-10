@@ -1,12 +1,12 @@
-import moment from 'moment';
-import Pikaday from 'pikaday';
-import 'pikaday/css/pikaday.css';
-import { addClass, outerHeight } from './../helpers/dom/element';
-import { deepExtend } from './../helpers/object';
-import EventManager from './../eventManager';
-import { isMetaKey } from './../helpers/unicode';
-import { stopPropagation } from './../helpers/dom/event';
-import TextEditor from './textEditor';
+import moment from 'moment'
+import Pikaday from 'pikaday'
+import 'pikaday/css/pikaday.css'
+import { addClass, outerHeight } from './../helpers/dom/element'
+import { deepExtend } from './../helpers/object'
+import EventManager from './../eventManager'
+import { isMetaKey } from './../helpers/unicode'
+import { stopPropagation } from './../helpers/dom/event'
+import TextEditor from './textEditor'
 
 /**
  * @private
@@ -19,61 +19,61 @@ class DateEditor extends TextEditor {
    * @param {Core} hotInstance Handsontable instance
    * @private
    */
-  constructor(hotInstance) {
-    super(hotInstance);
+  constructor (hotInstance) {
+    super(hotInstance)
 
     // TODO: Move this option to general settings
-    this.defaultDateFormat = 'DD/MM/YYYY';
-    this.isCellEdited = false;
-    this.parentDestroyed = false;
+    this.defaultDateFormat = 'DD/MM/YYYY'
+    this.isCellEdited = false
+    this.parentDestroyed = false
   }
 
-  init() {
+  init () {
     if (typeof moment !== 'function') {
-      throw new Error('You need to include moment.js to your project.');
+      throw new Error('You need to include moment.js to your project.')
     }
 
     if (typeof Pikaday !== 'function') {
-      throw new Error('You need to include Pikaday to your project.');
+      throw new Error('You need to include Pikaday to your project.')
     }
-    super.init();
+    super.init()
     this.instance.addHook('afterDestroy', () => {
-      this.parentDestroyed = true;
-      this.destroyElements();
-    });
+      this.parentDestroyed = true
+      this.destroyElements()
+    })
   }
 
   /**
    * Create data picker instance
    */
-  createElements() {
-    super.createElements();
+  createElements () {
+    super.createElements()
 
-    this.datePicker = this.hot.rootDocument.createElement('DIV');
-    this.datePickerStyle = this.datePicker.style;
-    this.datePickerStyle.position = 'absolute';
-    this.datePickerStyle.top = 0;
-    this.datePickerStyle.left = 0;
-    this.datePickerStyle.zIndex = 9999;
+    this.datePicker = this.hot.rootDocument.createElement('DIV')
+    this.datePickerStyle = this.datePicker.style
+    this.datePickerStyle.position = 'absolute'
+    this.datePickerStyle.top = 0
+    this.datePickerStyle.left = 0
+    this.datePickerStyle.zIndex = 9999
 
-    addClass(this.datePicker, 'htDatepickerHolder');
-    this.hot.rootDocument.body.appendChild(this.datePicker);
+    addClass(this.datePicker, 'htDatepickerHolder')
+    this.hot.rootDocument.body.appendChild(this.datePicker)
 
-    this.$datePicker = new Pikaday(this.getDatePickerConfig());
-    const eventManager = new EventManager(this);
+    this.$datePicker = new Pikaday(this.getDatePickerConfig())
+    const eventManager = new EventManager(this)
 
     /**
      * Prevent recognizing clicking on datepicker as clicking outside of table
      */
-    eventManager.addEventListener(this.datePicker, 'mousedown', event => stopPropagation(event));
-    this.hideDatepicker();
+    eventManager.addEventListener(this.datePicker, 'mousedown', event => stopPropagation(event))
+    this.hideDatepicker()
   }
 
   /**
    * Destroy data picker instance
    */
-  destroyElements() {
-    this.$datePicker.destroy();
+  destroyElements () {
+    this.$datePicker.destroy()
   }
 
   /**
@@ -86,8 +86,8 @@ class DateEditor extends TextEditor {
    * @param {*} originalValue Original value
    * @param {Object} cellProperties Object with cell properties ({@see Core#getCellMeta})
    */
-  prepare(row, col, prop, td, originalValue, cellProperties) {
-    super.prepare(row, col, prop, td, originalValue, cellProperties);
+  prepare (row, col, prop, td, originalValue, cellProperties) {
+    super.prepare(row, col, prop, td, originalValue, cellProperties)
   }
 
   /**
@@ -95,38 +95,38 @@ class DateEditor extends TextEditor {
    *
    * @param {Event} [event=null]
    */
-  open(event = null) {
-    super.open();
-    this.showDatepicker(event);
+  open (event = null) {
+    super.open()
+    this.showDatepicker(event)
   }
 
   /**
    * Close editor
    */
-  close() {
-    this._opened = false;
+  close () {
+    this._opened = false
     this.instance._registerTimeout(() => {
-      this.instance._refreshBorders();
-    });
+      this.instance._refreshBorders()
+    })
 
-    super.close();
+    super.close()
   }
 
   /**
    * @param {Boolean} [isCancelled=false]
    * @param {Boolean} [ctrlDown=false]
    */
-  finishEditing(isCancelled = false, ctrlDown = false) {
+  finishEditing (isCancelled = false , ctrlDown = false) {
     if (isCancelled) { // pressed ESC, restore original value
-      // var value = this.instance.getDataAtCell(this.row, this.col);
-      const value = this.originalValue;
+      // var value = this.instance.getDataAtCell(this.row, this.col)
+      const value = this.originalValue
 
       if (value !== void 0) {
-        this.setValue(value);
+        this.setValue(value)
       }
     }
-    this.hideDatepicker();
-    super.finishEditing(isCancelled, ctrlDown);
+    this.hideDatepicker()
+    super.finishEditing(isCancelled, ctrlDown)
   }
 
   /**
@@ -134,72 +134,71 @@ class DateEditor extends TextEditor {
    *
    * @param {Event} event
    */
-  showDatepicker(event) {
-    this.$datePicker.config(this.getDatePickerConfig());
+  showDatepicker (event) {
+    this.$datePicker.config(this.getDatePickerConfig())
 
-    const offset = this.TD.getBoundingClientRect();
-    const dateFormat = this.cellProperties.dateFormat || this.defaultDateFormat;
-    const datePickerConfig = this.$datePicker.config();
-    let dateStr;
-    const isMouseDown = this.instance.view.isMouseDown();
-    const isMeta = event ? isMetaKey(event.keyCode) : false;
+    const offset = this.TD.getBoundingClientRect()
+    const dateFormat = this.cellProperties.dateFormat || this.defaultDateFormat
+    const datePickerConfig = this.$datePicker.config()
+    let dateStr
+    const isMouseDown = this.instance.view.isMouseDown()
+    const isMeta = event ? isMetaKey(event.keyCode) : false
 
-    // this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top + outerHeight(this.TD)}px`;
-    if (offset.top >= this.hot.rootWindow.height() - 224) {
-      this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top - 224 + outerHeight(this.TD)}px`;
+    // this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top + outerHeight(this.TD)}px`
+    if (offset.top >= window.height() - 224) {
+      this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top - 224 + outerHeight(this.TD)}px`
     } else {
-      this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top + outerHeight(this.TD)}px`;
+      this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top + outerHeight(this.TD)}px`
     }
-    // this.datePickerStyle.left = `${this.hot.rootWindow.pageXOffset + offset.left}px`;
-    this.datePickerStyle.left = `${this.hot.rootWindow.pageXOffset + offset.left - 240 + outerHeight(this.TD)}px`;
+    // this.datePickerStyle.left = `${this.hot.rootWindow.pageXOffset + offset.left}px`
+    this.datePickerStyle.left = `${this.hot.rootWindow.pageXOffset + offset.left - 240 + outerHeight(this.TD)}px`
 
-    this.$datePicker._onInputFocus = function() {};
-    datePickerConfig.format = dateFormat;
+    this.$datePicker._onInputFocus = function () {}
+    datePickerConfig.format = dateFormat
 
     if (this.originalValue) {
-      dateStr = this.originalValue;
+      dateStr = this.originalValue
 
       if (moment(dateStr, dateFormat, true).isValid()) {
-        this.$datePicker.setMoment(moment(dateStr, dateFormat), true);
+        this.$datePicker.setMoment(moment(dateStr, dateFormat), true)
       }
 
       // workaround for date/time cells - pikaday resets the cell value to 12:00 AM by default, this will overwrite the value.
       if (this.getValue() !== this.originalValue) {
-        this.setValue(this.originalValue);
+        this.setValue(this.originalValue)
       }
 
       if (!isMeta && !isMouseDown) {
-        this.setValue('');
+        this.setValue('')
       }
-
     } else if (this.cellProperties.defaultDate) {
-      dateStr = this.cellProperties.defaultDate;
+      dateStr = this.cellProperties.defaultDate
 
-      datePickerConfig.defaultDate = dateStr;
+      datePickerConfig.defaultDate = dateStr
 
       if (moment(dateStr, dateFormat, true).isValid()) {
-        this.$datePicker.setMoment(moment(dateStr, dateFormat), true);
+        this.$datePicker.setMoment(moment(dateStr, dateFormat), true)
       }
 
       if (!isMeta && !isMouseDown) {
-        this.setValue('');
+        this.setValue('')
       }
     } else {
       // if a default date is not defined, set a soft-default-date: display the current day and month in the
       // datepicker, but don't fill the editor input
-      this.$datePicker.gotoToday();
+      this.$datePicker.gotoToday()
     }
 
-    this.datePickerStyle.display = 'block';
-    this.$datePicker.show();
+    this.datePickerStyle.display = 'block'
+    this.$datePicker.show()
   }
 
   /**
    * Hide data picker
    */
-  hideDatepicker() {
-    this.datePickerStyle.display = 'none';
-    this.$datePicker.hide();
+  hideDatepicker () {
+    this.datePickerStyle.display = 'none'
+    this.$datePicker.hide()
   }
 
   /**
@@ -207,46 +206,46 @@ class DateEditor extends TextEditor {
    *
    * @returns {Object}
    */
-  getDatePickerConfig() {
-    const htInput = this.TEXTAREA;
-    const options = {};
+  getDatePickerConfig () {
+    const htInput = this.TEXTAREA
+    const options = {}
 
     if (this.cellProperties && this.cellProperties.datePickerConfig) {
-      deepExtend(options, this.cellProperties.datePickerConfig);
+      deepExtend(options, this.cellProperties.datePickerConfig)
     }
-    const origOnSelect = options.onSelect;
-    const origOnClose = options.onClose;
+    const origOnSelect = options.onSelect
+    const origOnClose = options.onClose
 
-    options.field = htInput;
-    options.trigger = htInput;
-    options.container = this.datePicker;
-    options.bound = false;
-    options.format = options.format || this.defaultDateFormat;
-    options.reposition = options.reposition || false;
+    options.field = htInput
+    options.trigger = htInput
+    options.container = this.datePicker
+    options.bound = false
+    options.format = options.format || this.defaultDateFormat
+    options.reposition = options.reposition || false
     options.onSelect = (value) => {
-      let dateStr = value;
+      let dateStr = value
 
       if (!isNaN(dateStr.getTime())) {
-        dateStr = moment(dateStr).format(this.cellProperties.dateFormat || this.defaultDateFormat);
+        dateStr = moment(dateStr).format(this.cellProperties.dateFormat || this.defaultDateFormat)
       }
-      this.setValue(dateStr);
-      this.hideDatepicker();
+      this.setValue(dateStr)
+      this.hideDatepicker()
 
       if (origOnSelect) {
-        origOnSelect();
+        origOnSelect()
       }
-    };
+    }
     options.onClose = () => {
       if (!this.parentDestroyed) {
-        this.finishEditing(false);
+        this.finishEditing(false)
       }
       if (origOnClose) {
-        origOnClose();
+        origOnClose()
       }
-    };
+    }
 
-    return options;
+    return options
   }
 }
 
-export default DateEditor;
+export default DateEditor

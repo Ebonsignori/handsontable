@@ -29,7 +29,7 @@
  * FROM USE OR INABILITY TO USE THIS SOFTWARE.
  * 
  * Version: 7.0.3
- * Release date: 13/05/2019 (built at 07/06/2019 14:17:45)
+ * Release date: 13/05/2019 (built at 10/06/2019 09:37:35)
  */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
@@ -37695,7 +37695,7 @@ Handsontable.EventManager = _eventManager.default;
 Handsontable._getListenersCounter = _eventManager.getListenersCounter; // For MemoryLeak tests
 
 Handsontable.packageName = 'handsontable';
-Handsontable.buildDate = "07/06/2019 14:17:45";
+Handsontable.buildDate = "10/06/2019 09:37:35";
 Handsontable.version = "7.0.3"; // Export Hooks singleton
 
 Handsontable.hooks = _pluginHooks.default.getSingleton(); // TODO: Remove this exports after rewrite tests about this module
@@ -40517,7 +40517,7 @@ function (_TextEditor) {
 
       if (isCancelled) {
         // pressed ESC, restore original value
-        // var value = this.instance.getDataAtCell(this.row, this.col);
+        // var value = this.instance.getDataAtCell(this.row, this.col)
         var value = this.originalValue;
 
         if (value !== void 0) {
@@ -40543,13 +40543,13 @@ function (_TextEditor) {
       var datePickerConfig = this.$datePicker.config();
       var dateStr;
       var isMouseDown = this.instance.view.isMouseDown();
-      var isMeta = event ? (0, _unicode.isMetaKey)(event.keyCode) : false; // this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top + outerHeight(this.TD)}px`;
+      var isMeta = event ? (0, _unicode.isMetaKey)(event.keyCode) : false; // this.datePickerStyle.top = `${this.hot.rootWindow.pageYOffset + offset.top + outerHeight(this.TD)}px`
 
-      if (offset.top >= this.hot.rootWindow.height() - 224) {
+      if (offset.top >= window.height() - 224) {
         this.datePickerStyle.top = "".concat(this.hot.rootWindow.pageYOffset + offset.top - 224 + (0, _element.outerHeight)(this.TD), "px");
       } else {
         this.datePickerStyle.top = "".concat(this.hot.rootWindow.pageYOffset + offset.top + (0, _element.outerHeight)(this.TD), "px");
-      } // this.datePickerStyle.left = `${this.hot.rootWindow.pageXOffset + offset.left}px`;
+      } // this.datePickerStyle.left = `${this.hot.rootWindow.pageXOffset + offset.left}px`
 
 
       this.datePickerStyle.left = "".concat(this.hot.rootWindow.pageXOffset + offset.left - 240 + (0, _element.outerHeight)(this.TD), "px");
